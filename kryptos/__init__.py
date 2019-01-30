@@ -1,3 +1,5 @@
+import os.path
+
 hard_dependencies = ("numpy", "pandas")
 missing_dependencies = []
 
@@ -13,3 +15,5 @@ if missing_dependencies:
     )
 
 del hard_dependencies, dependency, missing_dependencies
+
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
