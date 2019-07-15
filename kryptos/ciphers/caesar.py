@@ -1,4 +1,4 @@
-
+import argparse
 import string
 
 def __init__(self):
@@ -23,3 +23,10 @@ def brute_force_deshift(msg):
         plaintexts.append(shift(msg, i))
         print("Key", "-", string.ascii_lowercase[i] + ":", plaintexts[i])
     return plaintexts
+
+if __name__ == '__main__':
+    psr = argparse.ArgumentParser()
+    psr.add_argument('text', metavar='text', action='store', nargs=1, type=str)
+    psr.add_argument('shift', metavar='shift', action='store', nargs='?', default=0, type=int)
+    args = psr.parse_args()
+    print(shift(args.text[0], args.shift))
