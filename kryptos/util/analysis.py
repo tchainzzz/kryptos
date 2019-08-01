@@ -4,7 +4,7 @@ import string
 import re
 import math
 import operator
-import scipy.stats
+from scipy import stats
 
 def __init__(self):
     pass
@@ -28,6 +28,24 @@ def calculateIC(string, ignore_case=True, alphabet=string.ascii_lowercase):
         ic += counter[k] * (counter[k] - 1)
         n_chars += counter[k]
     return ic / (n_chars * (n_chars-1))
+
+def hexIC(bytestring):
+    ciphertext = bytestring[2:]
+    hex_bytes = tuple(''.join(pair) for pair in zip(ciphertext[0::2], ciphertext[1::2]))
+    ctr = Counter(hex_bytes)
+    ic_sum = 0
+    for code, freq in ctr.items():
+        ic_sum += freq * (freq - 1)
+    return ic_sum / (len(hex_bytes) * len(hex_bytes) - 1) * 256
+
+def hexICAllSlices(bytestring, maxlen=16, unitsize=0.2):
+    for i in range(1, maxlen + 1):
+        ic_sum = 0
+        for start in range(i):
+            curr_slice = bytestring[start::i]
+            ic_sum += hexIC(curr_slice)
+        ic_sum /= i
+        print("Window size: {0} {1} {2}".format(i, "=" * int(ic_sum / unitsize), ic_sum))
 
 def sliceIC(string, sliceSize, ignore_case=True, alphabet=string.ascii_lowercase):
     if (ignore_case):
@@ -151,3 +169,10 @@ def nGramAnalysis(string, size):
         else:
             ngramCounts[segment] = 1
     return dict(sorted(ngramCounts.items(), key=lambda x: x[1], reverse=True))
+
+def fun_idea(text, window_size):
+    running_key = text * 2 
+    result = ""
+    for i in range(len(text)):
+        result += string.ascii_uppercase[(sum(string.ascii_uppercase.index(char) for char in text[i:i+window_size])) % 26]
+    return result
